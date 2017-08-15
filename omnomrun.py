@@ -44,7 +44,6 @@ def newlines(filename, delimiter=",", quotechar="\""):
         outlines = list(outreader)
 
         difflines = [x for x in inlines if x not in outlines]
-        print(inlines, outlines, difflines)
         for line in difflines:
             yield line
             outwriter.writerow(line)
