@@ -4,7 +4,6 @@ import os
 import time
 import sys
 import subprocess
-import shlex
 import csv
 import argparse
 
@@ -28,7 +27,8 @@ def runCommand(comm, opts, verbose=False):
     else:
         out = None
 
-    process = subprocess.Popen(shlex.split(comm), stdout=out, stderr=out)
+    process = subprocess.Popen(comm, shell=True, stdout=out, stderr=out)
+
     return process.communicate()
 
 def newlines(filename, delimiter=",", quotechar="\""):
