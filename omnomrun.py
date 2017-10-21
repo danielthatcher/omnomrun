@@ -15,6 +15,7 @@ def parseArgs(argv):
     parser.add_argument("-v", "--verbose", help="Print the output of the running commands", action="store_true", default=False)
     parser.add_argument("-d", "--delimiter", help="The delimiter of the CSV file", default=",")
     parser.add_argument("-q", "--quotechar", help="The quote char for the CSV file", default="\"")
+    parser.add_argument("-c", "--clean", help="Clean up old .omnomrun hidden file", action="store_true", default=False)
     parser.add_argument("command",
                         help="A python format string that will be formatted with each line of the input file to give the command to run")
     return parser.parse_args(argv)
@@ -52,13 +53,16 @@ def newlines(filename, delimiter=",", quotechar="\""):
 if __name__ == "__main__":
     args = parseArgs(sys.argv[1:])
 
+    metafile = ".{}.omnomrun".format(args.input_file)
+    if args.clean and os.path.exists(metafile):
+        os.remove(metafile)
+
     # Check the input file exists
     if not os.path.exists(args.input_file):
         open(args.input_file, "a").close()
 
-    outfilename = ".{}.omnomrun".format(args.input_file)
-    if not os.path.exists(outfilename):
-        open(outfilename, "a").close()
+    if not os.path.exists(metafile):
+        open(metafile, "a").close()
 
     while True:
         for line in newlines(args.input_file, args.delimiter, args.quotechar):
