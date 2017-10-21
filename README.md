@@ -16,7 +16,7 @@ The full help text for this program is shown below.
 ```
 $ ./omnomrun.py -h
 usage: omnomrun.py [-h] [-f INPUT_FILE] [-t TIME] [-v] [-d DELIMITER]
-                   [-q QUOTECHAR]
+                   [-q QUOTECHAR] [-c]
                    command
 
 positional arguments:
@@ -34,8 +34,8 @@ optional arguments:
                         The delimiter of the CSV file
   -q QUOTECHAR, --quotechar QUOTECHAR
                         The quote char for the CSV file
+  -c, --clean           Clean up old .omnomrun hidden file
 ```
 
 ## Current issues
-* The verbose flag does not work
 * Only lines not previously seen in the input file will be run, even if the line is new
