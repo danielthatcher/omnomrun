@@ -19,17 +19,18 @@ def parseArgs(argv):
                         help="A python format string that will be formatted with each line of the input file to give the command to run")
     return parser.parse_args(argv)
 
-def runCommand(comm, opts, verbose=False):
+def runCommand(comm, opts):
     """Run the command given the line of the input file as opts"""
     comm = comm.format(*opts)
-    if verbose:
-        out = subprocess.PIPE
-    else:
-        out = None
+    print("Running '{}'...".format(comm))
+    process = subprocess.Popen(comm, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE,
+                               universal_newlines=True)
+    for line in iter(process.stdout.readline, ""):
+        yield line
 
-    process = subprocess.Popen(comm, shell=True, stdout=out, stderr=out)
-
-    return process.communicate()
+    print("Completed")
+    print("")
+    process.stdout.close()
 
 def newlines(filename, delimiter=",", quotechar="\""):
     """Check for updated contents of a file and yield any new lines"""
@@ -61,6 +62,8 @@ if __name__ == "__main__":
 
     while True:
         for line in newlines(args.input_file, args.delimiter, args.quotechar):
-            runCommand(args.command, line, args.verbose)
+            for output in runCommand(args.command, line):
+                if args.verbose and output is not b'':
+                    print(output, end="")
 
         time.sleep(args.time)
